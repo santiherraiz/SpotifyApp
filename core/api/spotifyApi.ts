@@ -1,7 +1,8 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+// const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://10.0.2.2:8082';
 
 export const spotifyApi = axios.create({
     baseURL: API_BASE_URL,
