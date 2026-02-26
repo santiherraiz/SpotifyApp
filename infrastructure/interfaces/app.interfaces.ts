@@ -23,7 +23,7 @@ export interface Cancion {
 export interface Album {
     id: number;
     titulo: string;
-    imagen: string;
+    imagen: any;
     patrocinado: boolean;
     anyo?: string;
     artista: Artista;
@@ -32,12 +32,13 @@ export interface Album {
 export interface Artista {
     id: number;
     nombre: string;
-    imagen?: string;
+    imagen?: any;
 }
 
 export interface Playlist {
     id: number;
     titulo: string;
+    imagen?: any;
     numeroCanciones?: number;
     fechaCreacion?: string;
     usuario: Usuario;
@@ -46,7 +47,7 @@ export interface Playlist {
 export interface Podcast {
     id: number;
     titulo: string;
-    imagen?: string;
+    imagen?: any;
     descripcion?: string;
     anyo?: string;
 }

@@ -6,6 +6,7 @@ import { useArtistDetail, useArtistAlbums } from '../../../presentation/hooks/us
 import { PosterCard } from '../../../presentation/components/PosterCard';
 import { LoadingScreen } from '../../../presentation/components/LoadingScreen';
 import { EmptyState } from '../../../presentation/components/EmptyState';
+import { getImageSource } from '../../../presentation/utils/imageAssets';
 
 export default function ArtistDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,7 +21,6 @@ export default function ArtistDetailScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
                 <View className="pt-14 pb-6 px-4">
                     <TouchableOpacity onPress={() => router.back()} className="mb-4">
                         <Ionicons name="arrow-back" size={28} color="white" />
@@ -29,7 +29,7 @@ export default function ArtistDetailScreen() {
                     <View className="items-center mb-6">
                         {artist?.imagen ? (
                             <Image
-                                source={{ uri: artist.imagen }}
+                                source={getImageSource(artist.imagen)}
                                 className="w-48 h-48 rounded-full mb-4"
                             />
                         ) : (
@@ -42,7 +42,6 @@ export default function ArtistDetailScreen() {
                         </Text>
                     </View>
 
-                    {/* Actions */}
                     <View className="flex-row justify-center items-center gap-4 mb-8">
                         <TouchableOpacity className="bg-spotify-green px-6 py-2 rounded-full">
                             <Text className="text-black font-bold">Seguir</Text>
@@ -56,7 +55,6 @@ export default function ArtistDetailScreen() {
                     </View>
                 </View>
 
-                {/* Albums */}
                 <Text className="text-white text-xl font-bold px-4 mb-4">Álbumes</Text>
                 {albums && albums.length > 0 ? (
                     <View className="px-4">
@@ -67,7 +65,7 @@ export default function ArtistDetailScreen() {
                                 className="flex-row items-center py-3"
                             >
                                 {album.imagen ? (
-                                    <Image source={{ uri: album.imagen }} className="w-16 h-16 rounded mr-4" />
+                                    <Image source={getImageSource(album.imagen)} className="w-16 h-16 rounded mr-4" />
                                 ) : (
                                     <View className="w-16 h-16 rounded bg-spotify-dark-surface items-center justify-center mr-4">
                                         <Ionicons name="disc" size={28} color="#2196F3" />

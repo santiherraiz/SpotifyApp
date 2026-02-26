@@ -4,7 +4,16 @@ import { useAuthStore } from '../presentation/stores/auth.store';
 import { LoadingScreen } from '../presentation/components/LoadingScreen';
 
 export default function Index() {
-    // Saltamos la verificación y vamos directo a la app
-    return <Redirect href="/(app)/(tabs)/home" />;
+    const status = useAuthStore((s) => s.status);
+
+    if (status === 'checking') {
+        return <LoadingScreen message="Validando sesión..." />;
+    }
+
+    if (status === 'authenticated') {
+        return <Redirect href="/(app)/(tabs)/home" />;
+    }
+
+    return <Redirect href="/(auth)/login" />;
 }
 

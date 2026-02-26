@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { getImageSource } from '../../../presentation/utils/imageAssets';
 import {
     useFollowedPlaylists,
     useFollowedArtists,
@@ -42,15 +43,16 @@ export default function LibraryScreen() {
         switch (activeFilter) {
             case 'playlists':
                 return allPlaylists.length > 0 ? (
-                    allPlaylists.map((pl) => (
+                    allPlaylists.map((pl, index) => (
                         <TouchableOpacity
-                            key={pl.id}
+                            key={`lib-playlist-${pl.id}-${index}`}
                             onPress={() => router.push(`/(app)/playlist/${pl.id}`)}
                             className="flex-row items-center py-3 px-4"
                         >
-                            <View className="w-14 h-14 rounded bg-spotify-dark-surface items-center justify-center mr-3">
-                                <Ionicons name="musical-notes" size={24} color="#1DB954" />
-                            </View>
+                            <Image
+                                source={getImageSource(pl.imagen)}
+                                className="w-14 h-14 rounded mr-3"
+                            />
                             <View className="flex-1">
                                 <Text className="text-white text-base font-medium">{pl.titulo}</Text>
                                 <Text className="text-spotify-light-gray text-sm">
@@ -69,15 +71,16 @@ export default function LibraryScreen() {
 
             case 'artistas':
                 return (followedArtists ?? []).length > 0 ? (
-                    (followedArtists ?? []).map((artist) => (
+                    (followedArtists ?? []).map((artist, index) => (
                         <TouchableOpacity
-                            key={artist.id}
+                            key={`lib-artist-${artist.id}-${index}`}
                             onPress={() => router.push(`/(app)/artist/${artist.id}`)}
                             className="flex-row items-center py-3 px-4"
                         >
-                            <View className="w-14 h-14 rounded-full bg-spotify-dark-surface items-center justify-center mr-3">
-                                <Ionicons name="person" size={24} color="#FF9800" />
-                            </View>
+                            <Image
+                                source={getImageSource(artist.imagen)}
+                                className="w-14 h-14 rounded-full mr-3"
+                            />
                             <View className="flex-1">
                                 <Text className="text-white text-base font-medium">{artist.nombre}</Text>
                                 <Text className="text-spotify-light-gray text-sm">Artista</Text>
@@ -90,15 +93,22 @@ export default function LibraryScreen() {
 
             case 'albums':
                 return (followedAlbums ?? []).length > 0 ? (
-                    (followedAlbums ?? []).map((album) => (
+                    (followedAlbums ?? []).map((album, index) => (
                         <TouchableOpacity
-                            key={album.id}
+                            key={`lib-album-${album.id}-${index}`}
                             onPress={() => router.push(`/(app)/album/${album.id}`)}
                             className="flex-row items-center py-3 px-4"
                         >
-                            <View className="w-14 h-14 rounded bg-spotify-dark-surface items-center justify-center mr-3">
-                                <Ionicons name="disc" size={24} color="#2196F3" />
-                            </View>
+                            {getImageSource(album.imagen) ? (
+                                <Image
+                                    source={getImageSource(album.imagen)}
+                                    className="w-14 h-14 rounded mr-3"
+                                />
+                            ) : (
+                                <View className="w-14 h-14 rounded bg-spotify-dark-surface items-center justify-center mr-3">
+                                    <Ionicons name="disc" size={24} color="#2196F3" />
+                                </View>
+                            )}
                             <View className="flex-1">
                                 <Text className="text-white text-base font-medium">{album.titulo}</Text>
                                 <Text className="text-spotify-light-gray text-sm">
@@ -113,15 +123,16 @@ export default function LibraryScreen() {
 
             case 'podcasts':
                 return (followedPodcasts ?? []).length > 0 ? (
-                    (followedPodcasts ?? []).map((pod) => (
+                    (followedPodcasts ?? []).map((pod, index) => (
                         <TouchableOpacity
-                            key={pod.id}
+                            key={`lib-podcast-${pod.id}-${index}`}
                             onPress={() => router.push(`/(app)/podcast/${pod.id}`)}
                             className="flex-row items-center py-3 px-4"
                         >
-                            <View className="w-14 h-14 rounded bg-spotify-dark-surface items-center justify-center mr-3">
-                                <Ionicons name="mic" size={24} color="#E91E63" />
-                            </View>
+                            <Image
+                                source={getImageSource(pod.imagen)}
+                                className="w-14 h-14 rounded mr-3"
+                            />
                             <View className="flex-1">
                                 <Text className="text-white text-base font-medium">{pod.titulo}</Text>
                                 <Text className="text-spotify-light-gray text-sm">Podcast</Text>
@@ -135,7 +146,7 @@ export default function LibraryScreen() {
             case 'canciones':
                 return (savedSongs ?? []).length > 0 ? (
                     (savedSongs ?? []).map((song, index) => (
-                        <SongCard key={song.id} song={song} index={index} onPress={() => { }} />
+                        <SongCard key={song.id} song={song} index={index} />
                     ))
                 ) : (
                     <EmptyState icon="heart-outline" title="Sin canciones" subtitle="Guarda canciones que te gusten" />
@@ -145,13 +156,12 @@ export default function LibraryScreen() {
 
     return (
         <View className="flex-1 bg-spotify-black">
-            {/* Header */}
             <View className="pt-14 pb-2 px-4">
                 <Text className="text-white text-2xl font-bold">Tu biblioteca</Text>
             </View>
 
-            {/* Filter Buttons (Horizontal) */}
             <FlatList
+                className="flex-grow-0"
                 data={filters}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -159,9 +169,9 @@ export default function LibraryScreen() {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         onPress={() => setActiveFilter(item.key)}
-                        className={`px-4 py-2 rounded-full mr-2 ${activeFilter === item.key
-                                ? 'bg-spotify-green'
-                                : 'bg-spotify-dark-surface'
+                        className={`px-4 py-2 rounded-full mr-2 justify-center items-center self-start ${activeFilter === item.key
+                            ? 'bg-spotify-green'
+                            : 'bg-spotify-dark-surface'
                             }`}
                     >
                         <Text
@@ -175,7 +185,6 @@ export default function LibraryScreen() {
                 keyExtractor={(item) => item.key}
             />
 
-            {/* Content */}
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 {renderContent()}
             </ScrollView>

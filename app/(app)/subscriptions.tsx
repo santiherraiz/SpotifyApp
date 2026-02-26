@@ -9,14 +9,13 @@ import { EmptyState } from '../../presentation/components/EmptyState';
 
 export default function SubscriptionsScreen() {
     const router = useRouter();
-    const isPremium = useAuthStore((s) => s.isPremium);
+    const isPremium = useAuthStore((s) => s.user?.premium);
     const { data: plan, isLoading: loadingPlan } = usePlan();
     const { data: payments, isLoading: loadingPayments } = usePayments();
     const upgradePremium = useUpgradePremium();
 
     if (loadingPlan || loadingPayments) return <LoadingScreen />;
 
-    // If not premium, show upgrade option (though drawer should gate this)
     if (!isPremium) {
         return (
             <View className="flex-1 bg-spotify-black">
@@ -45,7 +44,7 @@ export default function SubscriptionsScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
+                {/* Cabecera */}
                 <View className="flex-row items-center pt-14 pb-4 px-4">
                     <TouchableOpacity onPress={() => router.back()}>
                         <Ionicons name="arrow-back" size={28} color="white" />
@@ -53,7 +52,7 @@ export default function SubscriptionsScreen() {
                     <Text className="text-white text-xl font-bold ml-4">Suscripciones</Text>
                 </View>
 
-                {/* Current Plan */}
+                {/* Plan Actual */}
                 <View className="mx-4 p-5 rounded-2xl bg-spotify-dark-elevated border border-spotify-green mb-6">
                     <View className="flex-row items-center mb-3">
                         <Ionicons name="star" size={24} color="#1DB954" />
@@ -66,7 +65,7 @@ export default function SubscriptionsScreen() {
                     )}
                 </View>
 
-                {/* Payment History */}
+                {/* Historial de Pagos */}
                 <Text className="text-white text-lg font-bold px-4 mb-3">Historial de pagos</Text>
                 {payments && payments.length > 0 ? (
                     payments.map((payment: any, index: number) => (

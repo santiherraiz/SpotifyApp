@@ -3,7 +3,7 @@ import { ApiUsuario, ApiConfiguracion } from '../../infrastructure/interfaces/ap
 import { Usuario, Configuracion } from '../../infrastructure/interfaces/app.interfaces';
 import { mapUsuario, mapConfiguracion } from '../../infrastructure/mappers/entity.mapper';
 
-// ─── User ───
+// Usuario
 export const getUserAction = async (userId: number): Promise<Usuario> => {
     const { data } = await spotifyApi.get<ApiUsuario>(`/usuarios/${userId}`);
     return mapUsuario(data);
@@ -33,7 +33,7 @@ export const deleteUserAction = async (userId: number): Promise<void> => {
     await spotifyApi.delete(`/usuarios/${userId}`);
 };
 
-// ─── Configuration ───
+// Configuración
 export const getConfigAction = async (userId: number): Promise<Configuracion> => {
     const { data } = await spotifyApi.get<ApiConfiguracion>(`/usuarios/${userId}/configuracion`);
     return mapConfiguracion(data);

@@ -28,6 +28,7 @@ export const useCreatePlaylist = () => {
         mutationFn: (titulo: string) => createPlaylistAction(user!.id, titulo),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['userPlaylists', user?.id] });
+            queryClient.invalidateQueries({ queryKey: ['publicPlaylists'] });
         },
     });
 };
@@ -55,6 +56,18 @@ export const useAddSongToPlaylist = (playlistId: number) => {
         mutationFn: (cancionId: number) => addSongToPlaylistAction(playlistId, cancionId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['playlistSongs', playlistId] });
+        },
+    });
+};
+
+export const useAddSongToPlaylistGeneric = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ playlistId, cancionId }: { playlistId: number; cancionId: number }) =>
+            addSongToPlaylistAction(playlistId, cancionId),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['playlistSongs', variables.playlistId] });
         },
     });
 };

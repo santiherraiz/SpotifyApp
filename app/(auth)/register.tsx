@@ -33,11 +33,9 @@ export default function RegisterScreen() {
             return;
         }
 
-        // Normalizar formato de fecha (de DD-MM-YYYY a YYYY-MM-DD si es necesario)
         let formattedDate = fechaNacimiento.trim();
         const dateParts = formattedDate.split(/[-/]/);
         if (dateParts.length === 3 && dateParts[0].length <= 2) {
-            // Asumimos DD-MM-YYYY y lo convertimos a YYYY-MM-DD
             formattedDate = `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}`;
         }
 
@@ -68,7 +66,7 @@ export default function RegisterScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <View className="px-8">
-                    {/* Header */}
+                    {/* Cabecera */}
                     <View className="items-center mb-10">
                         <Ionicons name="musical-notes" size={56} color="#1DB954" />
                         <Text className="text-white text-3xl font-bold mt-3">Crear cuenta</Text>
@@ -77,7 +75,7 @@ export default function RegisterScreen() {
                         </Text>
                     </View>
 
-                    {/* Username */}
+                    {/* Nombre de Usuario */}
                     <View className="mb-4">
                         <Text className="text-spotify-light-gray text-sm font-semibold mb-2 uppercase tracking-wider">
                             Usuario
@@ -122,7 +120,7 @@ export default function RegisterScreen() {
                         />
                     </View>
 
-                    {/* Password */}
+                    {/* Contraseña */}
                     <View className="mb-4">
                         <Text className="text-spotify-light-gray text-sm font-semibold mb-2 uppercase tracking-wider">
                             Contraseña
@@ -149,7 +147,7 @@ export default function RegisterScreen() {
                         </View>
                     </View>
 
-                    {/* Confirm Password */}
+                    {/* Confirmar Contraseña */}
                     <View className="mb-8">
                         <Text className="text-spotify-light-gray text-sm font-semibold mb-2 uppercase tracking-wider">
                             Confirmar contraseña
@@ -164,7 +162,7 @@ export default function RegisterScreen() {
                         />
                     </View>
 
-                    {/* Register Button */}
+                    {/* Botón de Registro */}
                     <TouchableOpacity
                         onPress={handleRegister}
                         disabled={registerMutation.isPending}
@@ -176,7 +174,7 @@ export default function RegisterScreen() {
                         </Text>
                     </TouchableOpacity>
 
-                    {/* Login Link */}
+                    {/* Enlace a Inicio de Sesión */}
                     <View className="flex-row justify-center mt-6 mb-8">
                         <Text className="text-spotify-light-gray text-base">
                             ¿Ya tienes cuenta?{' '}

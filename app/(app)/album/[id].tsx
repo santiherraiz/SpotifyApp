@@ -6,6 +6,7 @@ import { useAlbumDetail, useAlbumSongs } from '../../../presentation/hooks/useCa
 import { SongCard } from '../../../presentation/components/SongCard';
 import { LoadingScreen } from '../../../presentation/components/LoadingScreen';
 import { EmptyState } from '../../../presentation/components/EmptyState';
+import { getImageSource } from '../../../presentation/utils/imageAssets';
 
 export default function AlbumDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,7 +21,6 @@ export default function AlbumDetailScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
                 <View className="pt-14 pb-6 px-4">
                     <TouchableOpacity onPress={() => router.back()} className="mb-4">
                         <Ionicons name="arrow-back" size={28} color="white" />
@@ -29,7 +29,7 @@ export default function AlbumDetailScreen() {
                     <View className="items-center mb-6">
                         {album?.imagen ? (
                             <Image
-                                source={{ uri: album.imagen }}
+                                source={getImageSource(album.imagen)}
                                 className="w-56 h-56 rounded-xl mb-4"
                             />
                         ) : (
@@ -57,7 +57,6 @@ export default function AlbumDetailScreen() {
                         )}
                     </View>
 
-                    {/* Play button */}
                     <View className="flex-row justify-center items-center gap-4 mb-6">
                         <TouchableOpacity className="bg-spotify-green w-14 h-14 rounded-full items-center justify-center">
                             <Ionicons name="play" size={28} color="black" />
@@ -71,15 +70,12 @@ export default function AlbumDetailScreen() {
                     </View>
                 </View>
 
-                {/* Songs List */}
                 {songs && songs.length > 0 ? (
                     songs.map((song, index) => (
                         <SongCard
-                            key={song.id}
+                            key={`album-song-${song.id}-${index}`}
                             song={song}
                             index={index}
-                            showAlbumArt={false}
-                            onPress={() => { }}
                         />
                     ))
                 ) : (

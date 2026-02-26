@@ -10,11 +10,13 @@ import {
     Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useCreatePlaylist } from '../../../presentation/hooks/usePlaylists';
 
 export default function AddScreen() {
     const [titulo, setTitulo] = useState('');
     const createPlaylist = useCreatePlaylist();
+    const router = useRouter();
 
     const handleCreate = () => {
         if (!titulo.trim()) {
@@ -23,9 +25,12 @@ export default function AddScreen() {
         }
 
         createPlaylist.mutate(titulo.trim(), {
-            onSuccess: () => {
+            onSuccess: (playlist) => {
                 Alert.alert('¡Éxito!', 'Playlist creada correctamente');
                 setTitulo('');
+                if (playlist && playlist.id) {
+                    router.push(`/(app)/playlist/${playlist.id}`);
+                }
             },
             onError: () => {
                 Alert.alert('Error', 'No se pudo crear la playlist');
@@ -39,7 +44,6 @@ export default function AddScreen() {
             className="flex-1 bg-spotify-black"
         >
             <View className="flex-1 justify-center px-8">
-                {/* Header */}
                 <View className="items-center mb-10">
                     <View className="w-24 h-24 rounded-2xl bg-spotify-dark-surface items-center justify-center mb-4">
                         <Ionicons name="add" size={48} color="#1DB954" />
@@ -50,7 +54,6 @@ export default function AddScreen() {
                     </Text>
                 </View>
 
-                {/* Input */}
                 <View className="mb-8">
                     <TextInput
                         className="bg-spotify-dark-surface text-white text-lg px-5 py-4 rounded-xl text-center"
@@ -66,13 +69,12 @@ export default function AddScreen() {
                     </Text>
                 </View>
 
-                {/* Create Button */}
                 <TouchableOpacity
                     onPress={handleCreate}
                     disabled={createPlaylist.isPending || !titulo.trim()}
                     className={`py-4 rounded-full items-center ${!titulo.trim() || createPlaylist.isPending
-                            ? 'bg-spotify-dark-surface'
-                            : 'bg-spotify-green'
+                        ? 'bg-spotify-dark-surface'
+                        : 'bg-spotify-green'
                         }`}
                 >
                     <Text

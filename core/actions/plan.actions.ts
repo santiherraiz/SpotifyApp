@@ -9,7 +9,9 @@ export const getPlanAction = async (userId: number): Promise<any> => {
 };
 
 export const upgradePremiumAction = async (userId: number): Promise<any> => {
-    const { data } = await spotifyApi.post(`/usuarios/${userId}/premium`);
+    const { data } = await spotifyApi.post(`/usuarios/${userId}/premium`, {
+        renovar_pago: true
+    });
     return data;
 };
 

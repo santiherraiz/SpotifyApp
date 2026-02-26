@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { usePodcastDetail, usePodcastChapters } from '../../../presentation/hooks/useCatalog';
 import { LoadingScreen } from '../../../presentation/components/LoadingScreen';
 import { EmptyState } from '../../../presentation/components/EmptyState';
+import { getImageSource } from '../../../presentation/utils/imageAssets';
 
 const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -25,7 +26,6 @@ export default function PodcastDetailScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
                 <View className="pt-14 pb-6 px-4">
                     <TouchableOpacity onPress={() => router.back()} className="mb-4">
                         <Ionicons name="arrow-back" size={28} color="white" />
@@ -34,7 +34,7 @@ export default function PodcastDetailScreen() {
                     <View className="items-center mb-6">
                         {podcast?.imagen ? (
                             <Image
-                                source={{ uri: podcast.imagen }}
+                                source={getImageSource(podcast.imagen)}
                                 className="w-48 h-48 rounded-xl mb-4"
                             />
                         ) : (
@@ -55,7 +55,6 @@ export default function PodcastDetailScreen() {
                         )}
                     </View>
 
-                    {/* Actions */}
                     <View className="flex-row justify-center items-center gap-4 mb-6">
                         <TouchableOpacity className="bg-spotify-green px-6 py-2 rounded-full">
                             <Text className="text-black font-bold">Seguir</Text>
@@ -63,7 +62,6 @@ export default function PodcastDetailScreen() {
                     </View>
                 </View>
 
-                {/* Chapters */}
                 <Text className="text-white text-xl font-bold px-4 mb-4">Capítulos</Text>
                 {chapters && chapters.length > 0 ? (
                     chapters.map((chapter, index) => (

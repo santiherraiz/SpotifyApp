@@ -25,6 +25,7 @@ import {
     PlanPremium,
     Suscripcion,
 } from '../interfaces/app.interfaces';
+import { getRandomImage, isValidImageUrl } from '../../presentation/utils/imageAssets';
 
 // ─── Usuario ───
 export const mapUsuario = (raw: ApiUsuario): Usuario => ({
@@ -38,49 +39,67 @@ export const mapUsuario = (raw: ApiUsuario): Usuario => ({
 });
 
 // ─── Artista ───
-export const mapArtista = (raw: ApiArtista): Artista => ({
-    id: raw.id,
-    nombre: raw.nombre,
-    imagen: raw.imagen,
-});
+export const mapArtista = (raw: any): Artista => {
+    const data = raw.artista ? raw.artista : raw;
+    return {
+        id: data.id,
+        nombre: data.nombre,
+        imagen: isValidImageUrl(data.imagen) ? data.imagen : getRandomImage('artistas'),
+    };
+};
 
 // ─── Album ───
-export const mapAlbum = (raw: ApiAlbum): Album => ({
-    id: raw.id,
-    titulo: raw.titulo,
-    imagen: raw.imagen,
-    patrocinado: raw.patrocinado,
-    anyo: raw.anyo,
-    artista: raw.artista ? mapArtista(raw.artista) : { id: 0, nombre: 'Desconocido' },
-});
+export const mapAlbum = (raw: any): Album => {
+
+    const data = raw.album ? raw.album : raw;
+
+    return {
+        id: data.id,
+        titulo: data.titulo,
+        imagen: isValidImageUrl(data.imagen) ? data.imagen : getRandomImage('albumes'),
+        patrocinado: data.patrocinado,
+        anyo: data.anyo,
+        artista: data.artista ? mapArtista(data.artista) : { id: 0, nombre: 'Desconocido' },
+    };
+};
 
 // ─── Cancion ───
-export const mapCancion = (raw: ApiCancion): Cancion => ({
-    id: raw.id,
-    titulo: raw.titulo,
-    duracion: raw.duracion,
-    ruta: raw.ruta,
-    numeroReproducciones: raw.numero_reproducciones,
-    album: raw.album ? mapAlbum(raw.album) : { id: 0, titulo: '', imagen: '', patrocinado: false, artista: { id: 0, nombre: '' } },
-});
+export const mapCancion = (raw: any): Cancion => {
+    const data = raw.cancion ? raw.cancion : raw;
+
+    return {
+        id: data.id,
+        titulo: data.titulo,
+        duracion: data.duracion,
+        ruta: data.ruta,
+        numeroReproducciones: data.numeroReproducciones ?? data.numero_reproducciones ?? 0,
+        album: data.album ? mapAlbum(data.album) : { id: 0, titulo: '', imagen: getRandomImage('albumes'), patrocinado: false, artista: { id: 0, nombre: '' } },
+    };
+};
 
 // ─── Playlist ───
 export const mapPlaylist = (raw: ApiPlaylist): Playlist => ({
     id: raw.id,
     titulo: raw.titulo,
+    imagen: getRandomImage('playlists'),
     numeroCanciones: raw.numero_canciones,
     fechaCreacion: raw.fecha_creacion,
     usuario: raw.usuario ? mapUsuario(raw.usuario) : { id: 0, username: '', email: '', fechaNacimiento: '' },
 });
 
+
 // ─── Podcast ───
-export const mapPodcast = (raw: ApiPodcast): Podcast => ({
-    id: raw.id,
-    titulo: raw.titulo,
-    imagen: raw.imagen,
-    descripcion: raw.descripcion,
-    anyo: raw.anyo,
-});
+export const mapPodcast = (raw: any): Podcast => {
+    const data = raw.podcast ? raw.podcast : raw;
+    return {
+        id: data.id,
+        titulo: data.titulo,
+        imagen: isValidImageUrl(data.imagen) ? data.imagen : getRandomImage('podcasts'),
+        descripcion: data.descripcion,
+        anyo: data.anyo,
+    };
+};
+
 
 // ─── Capitulo ───
 export const mapCapitulo = (raw: ApiCapitulo): Capitulo => ({

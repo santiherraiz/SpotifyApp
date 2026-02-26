@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getImageSource } from '../utils/imageAssets';
 
 interface PosterCardProps {
     title: string;
     subtitle?: string;
-    imageUrl?: string;
+    imageUrl?: any;
     onPress?: () => void;
     size?: 'small' | 'medium' | 'large';
     rounded?: boolean;
@@ -25,18 +26,24 @@ export const PosterCard = ({
     size = 'medium',
     rounded = false,
 }: PosterCardProps) => {
+    const source = getImageSource(imageUrl);
+
     return (
         <TouchableOpacity onPress={onPress} className="mr-4" activeOpacity={0.7}>
-            {imageUrl ? (
+            {source ? (
                 <Image
-                    source={{ uri: imageUrl }}
+                    source={source}
                     className={`${sizeMap[size]} ${rounded ? 'rounded-full' : 'rounded-lg'}`}
                 />
             ) : (
                 <View
                     className={`${sizeMap[size]} ${rounded ? 'rounded-full' : 'rounded-lg'} bg-spotify-dark-surface items-center justify-center`}
                 >
-                    <Ionicons name="musical-notes" size={40} color="#535353" />
+                    <Ionicons
+                        name={rounded ? 'person' : (title.toLowerCase().includes('podcast') ? 'mic' : 'disc')}
+                        size={40}
+                        color={rounded ? '#FF9800' : (title.toLowerCase().includes('podcast') ? '#E91E63' : '#2196F3')}
+                    />
                 </View>
             )}
             <Text className="text-white text-sm font-medium mt-2 w-40" numberOfLines={1}>

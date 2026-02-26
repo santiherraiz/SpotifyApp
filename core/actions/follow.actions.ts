@@ -21,7 +21,7 @@ import {
     mapCancion,
 } from '../../infrastructure/mappers/entity.mapper';
 
-// ─── Followed Playlists ───
+// Followed Playlists
 export const getFollowedPlaylistsAction = async (userId: number): Promise<Playlist[]> => {
     const { data } = await spotifyApi.get<ApiPlaylist[]>(`/usuarios/${userId}/playlists-seguidas`);
     return data.map(mapPlaylist);
@@ -35,7 +35,7 @@ export const unfollowPlaylistAction = async (userId: number, playlistId: number)
     await spotifyApi.delete(`/usuarios/${userId}/playlists-seguidas`, { data: { playlistId } });
 };
 
-// ─── Followed Artists ───
+// Followed Artists
 export const getFollowedArtistsAction = async (userId: number): Promise<Artista[]> => {
     const { data } = await spotifyApi.get<ApiArtista[]>(`/usuarios/${userId}/artistas-seguidos`);
     return data.map(mapArtista);
@@ -49,7 +49,7 @@ export const unfollowArtistAction = async (userId: number, artistaId: number): P
     await spotifyApi.delete(`/usuarios/${userId}/artistas-seguidos`, { data: { artistaId } });
 };
 
-// ─── Followed Albums ───
+// Followed Albums
 export const getFollowedAlbumsAction = async (userId: number): Promise<Album[]> => {
     const { data } = await spotifyApi.get<ApiAlbum[]>(`/usuarios/${userId}/albums-seguidos`);
     return data.map(mapAlbum);
@@ -63,7 +63,7 @@ export const unfollowAlbumAction = async (userId: number, albumId: number): Prom
     await spotifyApi.delete(`/usuarios/${userId}/albums-seguidos`, { data: { albumId } });
 };
 
-// ─── Followed Podcasts ───
+// Followed Podcasts
 export const getFollowedPodcastsAction = async (userId: number): Promise<Podcast[]> => {
     const { data } = await spotifyApi.get<ApiPodcast[]>(`/usuarios/${userId}/podcasts-seguidos`);
     return data.map(mapPodcast);
@@ -77,7 +77,7 @@ export const unfollowPodcastAction = async (userId: number, podcastId: number): 
     await spotifyApi.delete(`/usuarios/${userId}/podcasts-seguidos`, { data: { podcastId } });
 };
 
-// ─── Saved Songs ───
+// Saved Songs
 export const getSavedSongsAction = async (userId: number): Promise<Cancion[]> => {
     const { data } = await spotifyApi.get<ApiCancion[]>(`/usuarios/${userId}/canciones-guardadas`);
     return data.map(mapCancion);

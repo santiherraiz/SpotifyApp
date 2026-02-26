@@ -10,17 +10,17 @@ const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             retry: 2,
-            staleTime: 1000 * 60 * 5, // 5 minutes
+            staleTime: 1000 * 60 * 60 * 24,
         },
     },
 });
 
 function RootLayoutInner() {
-    const checkAuth = useAuthStore((s) => s.checkAuth);
+    const checkStatus = useAuthStore((s) => s.checkStatus);
     const loadTheme = useThemeStore((s) => s.loadTheme);
 
     useEffect(() => {
-        checkAuth();
+        checkStatus();
         loadTheme();
     }, []);
 
@@ -32,10 +32,14 @@ function RootLayoutInner() {
     );
 }
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 export default function RootLayout() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <RootLayoutInner />
-        </QueryClientProvider>
+        <SafeAreaProvider>
+            <QueryClientProvider client={queryClient}>
+                <RootLayoutInner />
+            </QueryClientProvider>
+        </SafeAreaProvider>
     );
 }

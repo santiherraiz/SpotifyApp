@@ -21,7 +21,7 @@ import {
     mapCapitulo,
 } from '../../infrastructure/mappers/entity.mapper';
 
-// ─── Canciones ───
+// Canciones
 export const getCatalogSongsAction = async (): Promise<Cancion[]> => {
     const { data } = await spotifyApi.get<ApiCancion[]>('/canciones');
     return data.map(mapCancion);
@@ -32,7 +32,7 @@ export const getCatalogSongAction = async (cancionId: number): Promise<Cancion> 
     return mapCancion(data);
 };
 
-// ─── Artistas ───
+// Artistas
 export const getCatalogArtistsAction = async (): Promise<Artista[]> => {
     const { data } = await spotifyApi.get<ApiArtista[]>('/artistas');
     return data.map(mapArtista);
@@ -69,7 +69,7 @@ export const getAlbumSongsAction = async (albumId: number): Promise<Cancion[]> =
     return data.map(mapCancion);
 };
 
-// ─── Podcasts ───
+// Podcasts
 export const getCatalogPodcastsAction = async (): Promise<Podcast[]> => {
     const { data } = await spotifyApi.get<ApiPodcast[]>('/podcasts');
     return data.map(mapPodcast);

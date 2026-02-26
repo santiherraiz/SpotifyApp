@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Cancion } from '../../infrastructure/interfaces/app.interfaces';
 
+import { getImageSource } from '../utils/imageAssets';
+
 interface SongCardProps {
     song: Cancion;
     index?: number;
@@ -16,10 +18,22 @@ const formatDuration = (seconds: number): string => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
+import { useRouter } from 'expo-router';
+
 export const SongCard = ({ song, index, onPress, showAlbumArt = true }: SongCardProps) => {
+    const router = useRouter();
+
+    const handlePress = () => {
+        if (onPress) {
+            onPress();
+        } else {
+            router.push(`/(app)/song/${song.id}`);
+        }
+    };
+
     return (
         <TouchableOpacity
-            onPress={onPress}
+            onPress={handlePress}
             className="flex-row items-center py-3 px-4"
             activeOpacity={0.7}
         >
@@ -28,7 +42,7 @@ export const SongCard = ({ song, index, onPress, showAlbumArt = true }: SongCard
             )}
             {showAlbumArt && song.album?.imagen && (
                 <Image
-                    source={{ uri: song.album.imagen }}
+                    source={getImageSource(song.album.imagen)}
                     className="w-12 h-12 rounded mr-3"
                 />
             )}

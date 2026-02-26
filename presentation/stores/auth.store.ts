@@ -1,57 +1,77 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
-import { Usuario } from '../../infrastructure/interfaces/app.interfaces';
-import { loginAction, checkAuthStatusAction } from '../../core/actions/auth.actions';
+import { SecureStorageAdapter } from '../../infrastructure/storage/secureStorage';
+import { checkAuthStatusAction, loginAction, registerAction } from '../../core/actions/auth.actions';
 
 export type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 
-interface AuthState {
+export interface AuthState {
     status: AuthStatus;
     token: string | null;
-    user: Usuario | null;
-    isPremium: boolean;
-
-    login: (username: string, password: string) => Promise<boolean>;
+    user: any | null;
+    login: (email: string, password: string) => Promise<{ ok: boolean; message?: string }>;
+    register: (userData: any) => Promise<{ ok: boolean; message?: string }>;
+    checkStatus: () => Promise<void>;
     logout: () => Promise<void>;
-    checkAuth: () => Promise<void>;
-    setUser: (user: Usuario) => void;
-    setPremium: (isPremium: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
-    status: 'authenticated',
-    token: 'mock-token',
-    user: {
-        id: 1,
-        username: 'Demo User',
-        email: 'demo@example.com',
-        fechaNacimiento: '1990-01-01',
-    },
-    isPremium: true,
+    status: 'checking',
+    token: null,
+    user: null,
 
-    login: async (username: string, password: string) => {
-        try {
-            const { token, user } = await loginAction(username, password);
-            await SecureStore.setItemAsync('auth_token', token);
-            set({ status: 'authenticated', token, user });
-            return true;
-        } catch (error) {
+    login: async (email, password) => {
+        set({ status: 'checking' });
+        const resp = await loginAction(email, password);
+
+        if (!resp.ok || !resp.token) {
             set({ status: 'unauthenticated', token: null, user: null });
-            return false;
+            await SecureStorageAdapter.removeItem('auth_token');
+            return { ok: false, message: resp.message };
         }
+
+        await SecureStorageAdapter.setItem('auth_token', resp.token);
+        set({ status: 'authenticated', token: resp.token, user: resp.user });
+        return { ok: true };
+    },
+
+    register: async (userData) => {
+        set({ status: 'checking' });
+        const resp = await registerAction(userData);
+
+        if (!resp.ok) {
+            set({ status: 'unauthenticated' });
+            return { ok: false, message: resp.message };
+        }
+
+        // We do not auto-login right now since it doesn't return a token reliably
+        set({ status: 'unauthenticated' });
+        return { ok: true };
+    },
+
+    checkStatus: async () => {
+        set({ status: 'checking' });
+        const currentToken = await SecureStorageAdapter.getItem('auth_token');
+
+        if (!currentToken) {
+            set({ status: 'unauthenticated', user: null, token: null });
+            return;
+        }
+
+        const resp = await checkAuthStatusAction();
+        if (!resp.ok) {
+            set({ status: 'unauthenticated', user: null, token: null });
+            await SecureStorageAdapter.removeItem('auth_token');
+            return;
+        }
+
+        // If endpoint refreshed token, update it, otherwise keep current
+        const newToken = resp.token || currentToken;
+        await SecureStorageAdapter.setItem('auth_token', newToken);
+        set({ status: 'authenticated', token: newToken, user: resp.user });
     },
 
     logout: async () => {
-        await SecureStore.deleteItemAsync('auth_token');
-        set({ status: 'unauthenticated', token: null, user: null, isPremium: false });
-    },
-
-    checkAuth: async () => {
-        // En modo bypass, siempre confirmamos que estamos autenticados
-        set({ status: 'authenticated' });
-    },
-
-
-    setUser: (user: Usuario) => set({ user }),
-    setPremium: (isPremium: boolean) => set({ isPremium }),
+        await SecureStorageAdapter.removeItem('auth_token');
+        set({ status: 'unauthenticated', token: null, user: null });
+    }
 }));

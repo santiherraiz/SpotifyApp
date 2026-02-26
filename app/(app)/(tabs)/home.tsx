@@ -9,9 +9,11 @@ import { SongCard } from '../../../presentation/components/SongCard';
 import { LoadingScreen } from '../../../presentation/components/LoadingScreen';
 import { EmptyState } from '../../../presentation/components/EmptyState';
 import { useAuthStore } from '../../../presentation/stores/auth.store';
+import { useDrawer } from '../_layout';
 
 export default function HomeScreen() {
     const router = useRouter();
+    const { openDrawer } = useDrawer();
     const user = useAuthStore((s) => s.user);
     const { data: playlists, isLoading: loadingPlaylists } = useFollowedPlaylists();
     const { data: albums, isLoading: loadingAlbums } = useFollowedAlbums();
@@ -24,20 +26,18 @@ export default function HomeScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
                 <View className="flex-row items-center justify-between px-4 pt-14 pb-4">
                     <Text className="text-white text-2xl font-bold">
                         ¡Hola, {user?.username ?? 'Usuario'}!
                     </Text>
                     <TouchableOpacity
-                        onPress={() => router.push('/(app)/profile')}
+                        onPress={openDrawer}
                         className="w-10 h-10 rounded-full bg-spotify-dark-surface items-center justify-center"
                     >
                         <Ionicons name="person" size={20} color="#1DB954" />
                     </TouchableOpacity>
                 </View>
 
-                {/* Playlists Seguidas (Horizontal) */}
                 <HorizontalList
                     title="Playlists seguidas"
                     data={playlists ?? []}
@@ -46,12 +46,13 @@ export default function HomeScreen() {
                         <PosterCard
                             title={item.titulo}
                             subtitle={`${item.numeroCanciones ?? 0} canciones`}
+                            imageUrl={item.imagen}
                             onPress={() => router.push(`/(app)/playlist/${item.id}`)}
                         />
+
                     )}
                 />
 
-                {/* Álbumes Seguidos (Horizontal) */}
                 <HorizontalList
                     title="Álbumes seguidos"
                     data={albums ?? []}
@@ -66,7 +67,6 @@ export default function HomeScreen() {
                     )}
                 />
 
-                {/* Canciones Favoritas (Vertical) */}
                 <View className="mb-6">
                     <Text className="text-white text-xl font-bold px-4 mb-3">
                         Canciones favoritas
@@ -77,7 +77,6 @@ export default function HomeScreen() {
                                 key={song.id}
                                 song={song}
                                 index={index}
-                                onPress={() => { }}
                             />
                         ))
                     ) : (

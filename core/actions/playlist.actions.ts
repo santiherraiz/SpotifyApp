@@ -3,7 +3,7 @@ import { ApiPlaylist, ApiCancion } from '../../infrastructure/interfaces/api.int
 import { Playlist, Cancion } from '../../infrastructure/interfaces/app.interfaces';
 import { mapPlaylist, mapCancion } from '../../infrastructure/mappers/entity.mapper';
 
-// ─── User Playlists ───
+// Playlists del Usuario
 export const getUserPlaylistsAction = async (userId: number): Promise<Playlist[]> => {
     const { data } = await spotifyApi.get<ApiPlaylist[]>(`/usuarios/${userId}/playlists`);
     return data.map(mapPlaylist);
@@ -17,13 +17,13 @@ export const createPlaylistAction = async (
     return mapPlaylist(data);
 };
 
-// ─── Playlist Detail ───
+// Detalle de la Playlist
 export const getPlaylistDetailAction = async (playlistId: number): Promise<Playlist> => {
     const { data } = await spotifyApi.get<ApiPlaylist>(`/playlists/${playlistId}`);
     return mapPlaylist(data);
 };
 
-// ─── Playlist Songs ───
+// Canciones de la Playlist
 export const getPlaylistSongsAction = async (playlistId: number): Promise<Cancion[]> => {
     const { data } = await spotifyApi.get<ApiCancion[]>(`/playlists/${playlistId}/canciones`);
     return data.map(mapCancion);
@@ -43,7 +43,7 @@ export const removeSongFromPlaylistAction = async (
     await spotifyApi.delete(`/playlists/${playlistId}/canciones/${cancionId}`);
 };
 
-// ─── Public Playlists ───
+// Playlists Públicas
 export const getPublicPlaylistsAction = async (): Promise<Playlist[]> => {
     const { data } = await spotifyApi.get<ApiPlaylist[]>('/playlists');
     return data.map(mapPlaylist);

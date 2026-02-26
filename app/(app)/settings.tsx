@@ -63,7 +63,7 @@ export default function SettingsScreen() {
     return (
         <View className="flex-1 bg-spotify-black">
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Header */}
+                {/* Cabecera */}
                 <View className="flex-row items-center pt-14 pb-4 px-4">
                     <TouchableOpacity onPress={() => router.back()}>
                         <Ionicons name="arrow-back" size={28} color="white" />
@@ -71,7 +71,7 @@ export default function SettingsScreen() {
                     <Text className="text-white text-xl font-bold ml-4">Configuración</Text>
                 </View>
 
-                {/* Toggle Settings */}
+                {/* Ajustes de Reproducción */}
                 <Text className="text-spotify-light-gray text-sm font-semibold px-4 pt-4 pb-2 uppercase tracking-wider">
                     Reproducción
                 </Text>
@@ -94,7 +94,7 @@ export default function SettingsScreen() {
                     onToggle={() => toggleSetting('normalizacion')}
                 />
 
-                {/* Info Settings */}
+                {/* Ajustes Generales */}
                 <Text className="text-spotify-light-gray text-sm font-semibold px-4 pt-6 pb-2 uppercase tracking-wider">
                     General
                 </Text>
